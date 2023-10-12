@@ -1,0 +1,104 @@
+#### smallUnorderedJoins
+== Physical Plan ==
+* SortMergeJoin LeftOuter (19)
+:- * Sort (15)
+:  +- Exchange (14)
+:     +- * SortMergeJoin LeftOuter (13)
+:        :- * Sort (9)
+:        :  +- Exchange (8)
+:        :     +- * SortMergeJoin LeftOuter (7)
+:        :        :- * Sort (3)
+:        :        :  +- Exchange (2)
+:        :        :     +- * Scan ExistingRDD (1)
+:        :        +- * Sort (6)
+:        :           +- Exchange (5)
+:        :              +- * Scan ExistingRDD (4)
+:        +- * Sort (12)
+:           +- Exchange (11)
+:              +- * Scan ExistingRDD (10)
++- * Sort (18)
+   +- Exchange (17)
+      +- * Scan ExistingRDD (16)
+
+
+(1) Scan ExistingRDD [codegen id : 1]
+Output [5]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9]
+Arguments: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9], MapPartitionsRDD[1] at createDataFrame at data.scala:93, ExistingRDD, UnknownPartitioning(0)
+
+(2) Exchange
+Input [5]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9]
+Arguments: hashpartitioning(customer_id#6, 200), ENSURE_REQUIREMENTS, [plan_id=60]
+
+(3) Sort [codegen id : 2]
+Input [5]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9]
+Arguments: [customer_id#6 ASC NULLS FIRST], false, 0
+
+(4) Scan ExistingRDD [codegen id : 3]
+Output [3]: [customer_id#36, country#37, age#38]
+Arguments: [customer_id#36, country#37, age#38], MapPartitionsRDD[7] at createDataFrame at data.scala:93, ExistingRDD, UnknownPartitioning(0)
+
+(5) Exchange
+Input [3]: [customer_id#36, country#37, age#38]
+Arguments: hashpartitioning(customer_id#36, 200), ENSURE_REQUIREMENTS, [plan_id=66]
+
+(6) Sort [codegen id : 4]
+Input [3]: [customer_id#36, country#37, age#38]
+Arguments: [customer_id#36 ASC NULLS FIRST], false, 0
+
+(7) SortMergeJoin [codegen id : 5]
+Left keys [1]: [customer_id#6]
+Right keys [1]: [customer_id#36]
+Join type: LeftOuter
+Join condition: None
+
+(8) Exchange
+Input [8]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9, customer_id#36, country#37, age#38]
+Arguments: hashpartitioning(currency#9, 200), ENSURE_REQUIREMENTS, [plan_id=73]
+
+(9) Sort [codegen id : 6]
+Input [8]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9, customer_id#36, country#37, age#38]
+Arguments: [currency#9 ASC NULLS FIRST], false, 0
+
+(10) Scan ExistingRDD [codegen id : 7]
+Output [2]: [currency_id#17, exchange_rate_usd#18]
+Arguments: [currency_id#17, exchange_rate_usd#18], MapPartitionsRDD[3] at createDataFrame at data.scala:93, ExistingRDD, UnknownPartitioning(0)
+
+(11) Exchange
+Input [2]: [currency_id#17, exchange_rate_usd#18]
+Arguments: hashpartitioning(currency_id#17, 200), ENSURE_REQUIREMENTS, [plan_id=79]
+
+(12) Sort [codegen id : 8]
+Input [2]: [currency_id#17, exchange_rate_usd#18]
+Arguments: [currency_id#17 ASC NULLS FIRST], false, 0
+
+(13) SortMergeJoin [codegen id : 9]
+Left keys [1]: [currency#9]
+Right keys [1]: [currency_id#17]
+Join type: LeftOuter
+Join condition: None
+
+(14) Exchange
+Input [10]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9, customer_id#36, country#37, age#38, currency_id#17, exchange_rate_usd#18]
+Arguments: hashpartitioning(customer_id#6, 200), ENSURE_REQUIREMENTS, [plan_id=86]
+
+(15) Sort [codegen id : 10]
+Input [10]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9, customer_id#36, country#37, age#38, currency_id#17, exchange_rate_usd#18]
+Arguments: [customer_id#6 ASC NULLS FIRST], false, 0
+
+(16) Scan ExistingRDD [codegen id : 11]
+Output [4]: [customer_id#25, fav_color#26, fav_animal#27, nps_score#28]
+Arguments: [customer_id#25, fav_color#26, fav_animal#27, nps_score#28], MapPartitionsRDD[5] at createDataFrame at data.scala:93, ExistingRDD, UnknownPartitioning(0)
+
+(17) Exchange
+Input [4]: [customer_id#25, fav_color#26, fav_animal#27, nps_score#28]
+Arguments: hashpartitioning(customer_id#25, 200), ENSURE_REQUIREMENTS, [plan_id=92]
+
+(18) Sort [codegen id : 12]
+Input [4]: [customer_id#25, fav_color#26, fav_animal#27, nps_score#28]
+Arguments: [customer_id#25 ASC NULLS FIRST], false, 0
+
+(19) SortMergeJoin [codegen id : 13]
+Left keys [1]: [customer_id#6]
+Right keys [1]: [customer_id#25]
+Join type: LeftOuter
+Join condition: None

@@ -1,0 +1,262 @@
+#### largeMaybeOrderedJoins
+== Physical Plan ==
+* BroadcastNestedLoopJoin LeftOuter BuildRight (50)
+:- * SortMergeJoin LeftOuter (48)
+:  :- * BroadcastNestedLoopJoin LeftOuter BuildRight (45)
+:  :  :- * SortMergeJoin LeftOuter (42)
+:  :  :  :- * SortMergeJoin LeftOuter (39)
+:  :  :  :  :- * Sort (35)
+:  :  :  :  :  +- Exchange (34)
+:  :  :  :  :     +- * BroadcastNestedLoopJoin LeftOuter BuildRight (33)
+:  :  :  :  :        :- * BroadcastNestedLoopJoin LeftOuter BuildRight (31)
+:  :  :  :  :        :  :- * SortMergeJoin LeftOuter (29)
+:  :  :  :  :        :  :  :- * SortMergeJoin LeftOuter (26)
+:  :  :  :  :        :  :  :  :- * BroadcastNestedLoopJoin LeftOuter BuildRight (23)
+:  :  :  :  :        :  :  :  :  :- * BroadcastNestedLoopJoin LeftOuter BuildRight (20)
+:  :  :  :  :        :  :  :  :  :  :- * SortMergeJoin LeftOuter (17)
+:  :  :  :  :        :  :  :  :  :  :  :- * SortMergeJoin LeftOuter (14)
+:  :  :  :  :        :  :  :  :  :  :  :  :- * SortMergeJoin LeftOuter (11)
+:  :  :  :  :        :  :  :  :  :  :  :  :  :- * SortMergeJoin LeftOuter (7)
+:  :  :  :  :        :  :  :  :  :  :  :  :  :  :- * Sort (3)
+:  :  :  :  :        :  :  :  :  :  :  :  :  :  :  +- Exchange (2)
+:  :  :  :  :        :  :  :  :  :  :  :  :  :  :     +- * Scan ExistingRDD (1)
+:  :  :  :  :        :  :  :  :  :  :  :  :  :  +- * Sort (6)
+:  :  :  :  :        :  :  :  :  :  :  :  :  :     +- Exchange (5)
+:  :  :  :  :        :  :  :  :  :  :  :  :  :        +- * Scan ExistingRDD (4)
+:  :  :  :  :        :  :  :  :  :  :  :  :  +- * Sort (10)
+:  :  :  :  :        :  :  :  :  :  :  :  :     +- Exchange (9)
+:  :  :  :  :        :  :  :  :  :  :  :  :        +- * Scan ExistingRDD (8)
+:  :  :  :  :        :  :  :  :  :  :  :  +- * Sort (13)
+:  :  :  :  :        :  :  :  :  :  :  :     +- ReusedExchange (12)
+:  :  :  :  :        :  :  :  :  :  :  +- * Sort (16)
+:  :  :  :  :        :  :  :  :  :  :     +- ReusedExchange (15)
+:  :  :  :  :        :  :  :  :  :  +- BroadcastExchange (19)
+:  :  :  :  :        :  :  :  :  :     +- * Scan ExistingRDD (18)
+:  :  :  :  :        :  :  :  :  +- BroadcastExchange (22)
+:  :  :  :  :        :  :  :  :     +- * Scan ExistingRDD (21)
+:  :  :  :  :        :  :  :  +- * Sort (25)
+:  :  :  :  :        :  :  :     +- ReusedExchange (24)
+:  :  :  :  :        :  :  +- * Sort (28)
+:  :  :  :  :        :  :     +- ReusedExchange (27)
+:  :  :  :  :        :  +- ReusedExchange (30)
+:  :  :  :  :        +- ReusedExchange (32)
+:  :  :  :  +- * Sort (38)
+:  :  :  :     +- Exchange (37)
+:  :  :  :        +- * Scan ExistingRDD (36)
+:  :  :  +- * Sort (41)
+:  :  :     +- ReusedExchange (40)
+:  :  +- BroadcastExchange (44)
+:  :     +- * Scan ExistingRDD (43)
+:  +- * Sort (47)
+:     +- ReusedExchange (46)
++- ReusedExchange (49)
+
+
+(1) Scan ExistingRDD [codegen id : 1]
+Output [5]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9]
+Arguments: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9], MapPartitionsRDD[1] at createDataFrame at data.scala:93, ExistingRDD, UnknownPartitioning(0)
+
+(2) Exchange
+Input [5]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9]
+Arguments: hashpartitioning(customer_id#6, 200), ENSURE_REQUIREMENTS, [plan_id=1039]
+
+(3) Sort [codegen id : 2]
+Input [5]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9]
+Arguments: [customer_id#6 ASC NULLS FIRST], false, 0
+
+(4) Scan ExistingRDD [codegen id : 3]
+Output [3]: [customer_id#36, country#37, age#38]
+Arguments: [customer_id#36, country#37, age#38], MapPartitionsRDD[7] at createDataFrame at data.scala:93, ExistingRDD, UnknownPartitioning(0)
+
+(5) Exchange
+Input [3]: [customer_id#36, country#37, age#38]
+Arguments: hashpartitioning(customer_id#36, 200), ENSURE_REQUIREMENTS, [plan_id=1045]
+
+(6) Sort [codegen id : 4]
+Input [3]: [customer_id#36, country#37, age#38]
+Arguments: [customer_id#36 ASC NULLS FIRST], false, 0
+
+(7) SortMergeJoin [codegen id : 5]
+Left keys [1]: [customer_id#6]
+Right keys [1]: [customer_id#36]
+Join type: LeftOuter
+Join condition: None
+
+(8) Scan ExistingRDD [codegen id : 6]
+Output [4]: [customer_id#25, fav_color#26, fav_animal#27, nps_score#28]
+Arguments: [customer_id#25, fav_color#26, fav_animal#27, nps_score#28], MapPartitionsRDD[5] at createDataFrame at data.scala:93, ExistingRDD, UnknownPartitioning(0)
+
+(9) Exchange
+Input [4]: [customer_id#25, fav_color#26, fav_animal#27, nps_score#28]
+Arguments: hashpartitioning(customer_id#25, 200), ENSURE_REQUIREMENTS, [plan_id=1054]
+
+(10) Sort [codegen id : 7]
+Input [4]: [customer_id#25, fav_color#26, fav_animal#27, nps_score#28]
+Arguments: [customer_id#25 ASC NULLS FIRST], false, 0
+
+(11) SortMergeJoin [codegen id : 8]
+Left keys [1]: [customer_id#6]
+Right keys [1]: [customer_id#25]
+Join type: LeftOuter
+Join condition: None
+
+(12) ReusedExchange [Reuses operator id: 5]
+Output [3]: [customer_id#156, country#157, age#158]
+
+(13) Sort [codegen id : 10]
+Input [3]: [customer_id#156, country#157, age#158]
+Arguments: [customer_id#156 ASC NULLS FIRST], false, 0
+
+(14) SortMergeJoin [codegen id : 11]
+Left keys [1]: [customer_id#6]
+Right keys [1]: [customer_id#156]
+Join type: LeftOuter
+Join condition: None
+
+(15) ReusedExchange [Reuses operator id: 9]
+Output [4]: [customer_id#159, fav_color#160, fav_animal#161, nps_score#162]
+
+(16) Sort [codegen id : 13]
+Input [4]: [customer_id#159, fav_color#160, fav_animal#161, nps_score#162]
+Arguments: [customer_id#159 ASC NULLS FIRST], false, 0
+
+(17) SortMergeJoin [codegen id : 16]
+Left keys [1]: [customer_id#6]
+Right keys [1]: [customer_id#159]
+Join type: LeftOuter
+Join condition: None
+
+(18) Scan ExistingRDD [codegen id : 14]
+Output [3]: [customer_id#163, country#164, age#165]
+Arguments: [customer_id#163, country#164, age#165], MapPartitionsRDD[7] at createDataFrame at data.scala:93, ExistingRDD, UnknownPartitioning(0)
+
+(19) BroadcastExchange
+Input [3]: [customer_id#163, country#164, age#165]
+Arguments: IdentityBroadcastMode, [plan_id=1079]
+
+(20) BroadcastNestedLoopJoin [codegen id : 16]
+Join type: LeftOuter
+Join condition: (customer_id#6 = customer_id#156)
+
+(21) Scan ExistingRDD [codegen id : 15]
+Output [4]: [customer_id#166, fav_color#167, fav_animal#168, nps_score#169]
+Arguments: [customer_id#166, fav_color#167, fav_animal#168, nps_score#169], MapPartitionsRDD[5] at createDataFrame at data.scala:93, ExistingRDD, UnknownPartitioning(0)
+
+(22) BroadcastExchange
+Input [4]: [customer_id#166, fav_color#167, fav_animal#168, nps_score#169]
+Arguments: IdentityBroadcastMode, [plan_id=1083]
+
+(23) BroadcastNestedLoopJoin [codegen id : 16]
+Join type: LeftOuter
+Join condition: (customer_id#6 = customer_id#159)
+
+(24) ReusedExchange [Reuses operator id: 5]
+Output [3]: [customer_id#170, country#171, age#172]
+
+(25) Sort [codegen id : 18]
+Input [3]: [customer_id#170, country#171, age#172]
+Arguments: [customer_id#170 ASC NULLS FIRST], false, 0
+
+(26) SortMergeJoin [codegen id : 19]
+Left keys [1]: [customer_id#6]
+Right keys [1]: [customer_id#170]
+Join type: LeftOuter
+Join condition: None
+
+(27) ReusedExchange [Reuses operator id: 9]
+Output [4]: [customer_id#173, fav_color#174, fav_animal#175, nps_score#176]
+
+(28) Sort [codegen id : 21]
+Input [4]: [customer_id#173, fav_color#174, fav_animal#175, nps_score#176]
+Arguments: [customer_id#173 ASC NULLS FIRST], false, 0
+
+(29) SortMergeJoin [codegen id : 24]
+Left keys [1]: [customer_id#6]
+Right keys [1]: [customer_id#173]
+Join type: LeftOuter
+Join condition: None
+
+(30) ReusedExchange [Reuses operator id: 19]
+Output [3]: [customer_id#177, country#178, age#179]
+
+(31) BroadcastNestedLoopJoin [codegen id : 24]
+Join type: LeftOuter
+Join condition: (customer_id#6 = customer_id#170)
+
+(32) ReusedExchange [Reuses operator id: 22]
+Output [4]: [customer_id#180, fav_color#181, fav_animal#182, nps_score#183]
+
+(33) BroadcastNestedLoopJoin [codegen id : 24]
+Join type: LeftOuter
+Join condition: (customer_id#6 = customer_id#173)
+
+(34) Exchange
+Input [40]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9, customer_id#36, country#37, age#38, customer_id#25, fav_color#26, fav_animal#27, nps_score#28, customer_id#156, country#157, age#158, customer_id#159, fav_color#160, fav_animal#161, nps_score#162, customer_id#163, country#164, age#165, customer_id#166, fav_color#167, fav_animal#168, nps_score#169, customer_id#170, country#171, age#172, customer_id#173, fav_color#174, fav_animal#175, nps_score#176, customer_id#177, country#178, age#179, customer_id#180, fav_color#181, fav_animal#182, nps_score#183]
+Arguments: hashpartitioning(currency#9, 200), ENSURE_REQUIREMENTS, [plan_id=1231]
+
+(35) Sort [codegen id : 25]
+Input [40]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9, customer_id#36, country#37, age#38, customer_id#25, fav_color#26, fav_animal#27, nps_score#28, customer_id#156, country#157, age#158, customer_id#159, fav_color#160, fav_animal#161, nps_score#162, customer_id#163, country#164, age#165, customer_id#166, fav_color#167, fav_animal#168, nps_score#169, customer_id#170, country#171, age#172, customer_id#173, fav_color#174, fav_animal#175, nps_score#176, customer_id#177, country#178, age#179, customer_id#180, fav_color#181, fav_animal#182, nps_score#183]
+Arguments: [currency#9 ASC NULLS FIRST], false, 0
+
+(36) Scan ExistingRDD [codegen id : 26]
+Output [2]: [currency_id#17, exchange_rate_usd#18]
+Arguments: [currency_id#17, exchange_rate_usd#18], MapPartitionsRDD[3] at createDataFrame at data.scala:93, ExistingRDD, UnknownPartitioning(0)
+
+(37) Exchange
+Input [2]: [currency_id#17, exchange_rate_usd#18]
+Arguments: hashpartitioning(currency_id#17, 200), ENSURE_REQUIREMENTS, [plan_id=1119]
+
+(38) Sort [codegen id : 27]
+Input [2]: [currency_id#17, exchange_rate_usd#18]
+Arguments: [currency_id#17 ASC NULLS FIRST], false, 0
+
+(39) SortMergeJoin [codegen id : 28]
+Left keys [1]: [currency#9]
+Right keys [1]: [currency_id#17]
+Join type: LeftOuter
+Join condition: None
+
+(40) ReusedExchange [Reuses operator id: 37]
+Output [2]: [currency_id#184, exchange_rate_usd#185]
+
+(41) Sort [codegen id : 30]
+Input [2]: [currency_id#184, exchange_rate_usd#185]
+Arguments: [currency_id#184 ASC NULLS FIRST], false, 0
+
+(42) SortMergeJoin [codegen id : 32]
+Left keys [1]: [currency#9]
+Right keys [1]: [currency_id#184]
+Join type: LeftOuter
+Join condition: None
+
+(43) Scan ExistingRDD [codegen id : 31]
+Output [2]: [currency_id#186, exchange_rate_usd#187]
+Arguments: [currency_id#186, exchange_rate_usd#187], MapPartitionsRDD[3] at createDataFrame at data.scala:93, ExistingRDD, UnknownPartitioning(0)
+
+(44) BroadcastExchange
+Input [2]: [currency_id#186, exchange_rate_usd#187]
+Arguments: IdentityBroadcastMode, [plan_id=1135]
+
+(45) BroadcastNestedLoopJoin [codegen id : 32]
+Join type: LeftOuter
+Join condition: (currency#9 = currency_id#184)
+
+(46) ReusedExchange [Reuses operator id: 37]
+Output [2]: [currency_id#188, exchange_rate_usd#189]
+
+(47) Sort [codegen id : 34]
+Input [2]: [currency_id#188, exchange_rate_usd#189]
+Arguments: [currency_id#188 ASC NULLS FIRST], false, 0
+
+(48) SortMergeJoin [codegen id : 36]
+Left keys [1]: [currency#9]
+Right keys [1]: [currency_id#188]
+Join type: LeftOuter
+Join condition: None
+
+(49) ReusedExchange [Reuses operator id: 44]
+Output [2]: [currency_id#190, exchange_rate_usd#191]
+
+(50) BroadcastNestedLoopJoin [codegen id : 36]
+Join type: LeftOuter
+Join condition: (currency#9 = currency_id#188)

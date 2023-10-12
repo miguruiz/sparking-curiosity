@@ -1,0 +1,72 @@
+COMMON TABLE EXPRESSION
+== Physical Plan ==
+* SortMergeJoin LeftOuter (13)
+:- * Sort (3)
+:  +- Exchange (2)
+:     +- * Scan ExistingRDD (1)
++- * Sort (12)
+   +- Exchange (11)
+      +- * SortMergeJoin LeftOuter (10)
+         :- * Sort (6)
+         :  +- Exchange (5)
+         :     +- * Scan ExistingRDD (4)
+         +- * Sort (9)
+            +- Exchange (8)
+               +- * Scan ExistingRDD (7)
+
+
+(1) Scan ExistingRDD [codegen id : 1]
+Output [5]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9]
+Arguments: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9], MapPartitionsRDD[1] at createDataFrame at data.scala:108, ExistingRDD, UnknownPartitioning(0)
+
+(2) Exchange
+Input [5]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9]
+Arguments: hashpartitioning(customer_id#6, 200), ENSURE_REQUIREMENTS, [plan_id=243]
+
+(3) Sort [codegen id : 2]
+Input [5]: [booking_id#5, customer_id#6, booking_date_time#7, total_amount#8, currency#9]
+Arguments: [customer_id#6 ASC NULLS FIRST], false, 0
+
+(4) Scan ExistingRDD [codegen id : 3]
+Output [3]: [customer_id#36, country#37, age#38]
+Arguments: [customer_id#36, country#37, age#38], MapPartitionsRDD[7] at createDataFrame at data.scala:108, ExistingRDD, UnknownPartitioning(0)
+
+(5) Exchange
+Input [3]: [customer_id#36, country#37, age#38]
+Arguments: hashpartitioning(country#37, 200), ENSURE_REQUIREMENTS, [plan_id=249]
+
+(6) Sort [codegen id : 4]
+Input [3]: [customer_id#36, country#37, age#38]
+Arguments: [country#37 ASC NULLS FIRST], false, 0
+
+(7) Scan ExistingRDD [codegen id : 5]
+Output [2]: [country_id#44, population#45]
+Arguments: [country_id#44, population#45], MapPartitionsRDD[9] at createDataFrame at data.scala:108, ExistingRDD, UnknownPartitioning(0)
+
+(8) Exchange
+Input [2]: [country_id#44, population#45]
+Arguments: hashpartitioning(country_id#44, 200), ENSURE_REQUIREMENTS, [plan_id=255]
+
+(9) Sort [codegen id : 6]
+Input [2]: [country_id#44, population#45]
+Arguments: [country_id#44 ASC NULLS FIRST], false, 0
+
+(10) SortMergeJoin [codegen id : 7]
+Left keys [1]: [country#37]
+Right keys [1]: [country_id#44]
+Join type: LeftOuter
+Join condition: None
+
+(11) Exchange
+Input [5]: [customer_id#36, country#37, age#38, country_id#44, population#45]
+Arguments: hashpartitioning(customer_id#36, 200), ENSURE_REQUIREMENTS, [plan_id=262]
+
+(12) Sort [codegen id : 8]
+Input [5]: [customer_id#36, country#37, age#38, country_id#44, population#45]
+Arguments: [customer_id#36 ASC NULLS FIRST], false, 0
+
+(13) SortMergeJoin [codegen id : 9]
+Left keys [1]: [customer_id#6]
+Right keys [1]: [customer_id#36]
+Join type: LeftOuter
+Join condition: None
