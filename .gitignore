@@ -1,0 +1,8 @@
+/project/project/
+/project/target/
+/target/
+/.bsp/
+/.idea/
+.git-askpass
+derby.log
+.DS_Store
